@@ -61,9 +61,15 @@ def getinfo(rpc_connection):
         raise Exception("Connection error!")
     return getinfo
 
-def createrawtransaction(rpc_connection, txid, vout, address, amount):
+def createrawtransaction(rpc_connection, txids, vouts, address, amount):
     try:
-        txid_vout = [{ "txid": txid, "vout":vout }]
+        txid_vout = []
+
+        for txid, vout in zip(txids, vouts):
+            txid_vout_v1 = [{ "txid": txid, "vout":vout }]
+            txid_vout.extend(txid_vout_v1)
+
+        
         address_amount = {address: amount}
 
         rawtransaction = rpc_connection.createrawtransaction(txid_vout, address_amount)
