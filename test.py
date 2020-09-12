@@ -59,15 +59,8 @@ final_res = rpclib.signrawtx(rpc_connect, res)
 
 
 tx = transaction.Transaction(res)
-if privkey:
-    txin_type, privkey2, compressed = bitcoin.deserialize_privkey(privkey)
-    pubkey = bitcoin.public_key_from_private_key(privkey2, compressed)
-    h160 = bitcoin.hash_160(bytes.fromhex(pubkey))
-    x_pubkey = 'fd' + binascii.hexlify(b'\x00' + h160).decode('ascii')
-    tx.sign({x_pubkey:(privkey2, compressed)})
-else:
-    self.wallet.sign_transaction(tx, password)
-tx = tx.as_dict()
+
+test1 = tx.sign(privkey)
 
 print(final_res)
 print(tx)
