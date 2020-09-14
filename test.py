@@ -6,8 +6,8 @@ import json
 import sys
 
 from lib import bitcoin
-
-
+from lib import wallet
+from lib import commands
 from lib import transaction
 
 rpc_user = "changeme"
@@ -55,15 +55,25 @@ amount = round(amount, 10)
 
 res = rpclib.createrawtransaction(rpc_connect, list_of_ids, list_of_vouts, address, amount)
 
-tx = transaction.Transaction(res)
+test1 = rpclib.decoderawtransaction(rpc_connect, res)
 
-test1 = tx.sign(privkey)
+print(test1)
 
+cmd_runner = commands.Commands()
+
+tx = cmd_runner.signtransaction(res, privkey)
 
 final_res = rpclib.signrawtx(rpc_connect, res)
 
-print(final_res)
 print(tx)
+
+test2 = rpclib.decoderawtransaction(rpc_connect, tx['hex'])
+test3 = rpclib.decoderawtransaction(rpc_connect, final_res['hex'])
+
+
+print(test2)
+print(test3)
+
 
 final_res = final_res['hex']
 

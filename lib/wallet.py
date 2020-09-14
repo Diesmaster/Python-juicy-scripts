@@ -691,13 +691,13 @@ class Abstract_Wallet(PrintError):
         received, sent = self.get_addr_io(address)
         c = u = x = interest = 0
         local_height = self.get_local_height()
-        
+
         # calc kmd interest
         if constants.net.COIN == 'KMD':
             utxos = self.get_addr_utxo(address)
             for utxo in utxos:
                 interest += calcInterest(utxos[utxo]['locktime'], utxos[utxo]['value'], utxos[utxo]['height'])
-        
+
         for txo, (tx_height, v, is_cb) in received.items():
             if is_cb and tx_height + COINBASE_MATURITY > local_height:
                 x += v
@@ -1279,7 +1279,7 @@ class Abstract_Wallet(PrintError):
 
         # Sort the inputs and outputs deterministically
         tx.BIP_LI01_sort()
-        
+
         # run coinchooser to calc interest and boost vouts
         # set locktime for kmd
         max_change = self.max_change_outputs if self.multiple_change else 1
@@ -1288,7 +1288,7 @@ class Abstract_Wallet(PrintError):
                                     fee_estimator, self.dust_threshold())
         if constants.net.COIN == 'KMD':
             tx.locktime = math.floor(time.time()) - 777
-        
+
         run_hook('make_unsigned_transaction', self, tx)
         return tx
 
@@ -2315,4 +2315,3 @@ class Wallet(object):
         if wallet_type in wallet_constructors:
             return wallet_constructors[wallet_type]
         raise RuntimeError("Unknown wallet type: " + str(wallet_type))
-

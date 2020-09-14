@@ -41,7 +41,6 @@ from .i18n import _
 from .transaction import Transaction, multisig_script
 from .paymentrequest import PR_PAID, PR_UNPAID, PR_UNKNOWN, PR_EXPIRED
 from .plugins import run_hook
-from electrum_zcash import constants
 
 known_commands = {}
 
@@ -92,11 +91,11 @@ def command(s):
 
 class Commands:
 
-    def __init__(self, config, wallet, network, callback = None):
-        self.config = config
-        self.wallet = wallet
-        self.network = network
-        self._callback = callback
+    #def __init__(self, config, wallet, network, callback = None):
+        #self.config = config
+        #self.wallet = wallet
+        #self.network = network
+        #self._callback = callback
 
     def _run(self, method, args, password_getter):
         # this wrapper is called from the python console
@@ -232,7 +231,7 @@ class Commands:
         tx.sign(keypairs)
         return tx.as_dict()
 
-    @command('wp')
+
     def signtransaction(self, tx, privkey=None, password=None):
         """Sign a transaction. The wallet keys will be used unless a private key is provided."""
         tx = Transaction(tx)
@@ -241,7 +240,7 @@ class Commands:
             pubkey = bitcoin.public_key_from_private_key(privkey2, compressed)
             h160 = bitcoin.hash_160(bfh(pubkey))
             x_pubkey = 'fd' + bh2u(b'\x00' + h160)
-            tx.sign({x_pubkey:(privkey2, compressed)})
+            tx.sign({x_pubkey:privkey2})
         else:
             self.wallet.sign_transaction(tx, password)
         return tx.as_dict()
@@ -420,7 +419,7 @@ class Commands:
 
         coins = self.wallet.get_spendable_coins(domain, self.config)
         tx = self.wallet.make_unsigned_transaction(coins, final_outputs, self.config, fee, change_addr)
-        if locktime != None: 
+        if locktime != None:
             tx.locktime = locktime
         if not unsigned:
             run_hook('sign_tx', self.wallet, tx)
@@ -686,8 +685,8 @@ param_descriptions = {
     'pubkey': 'Public key',
     'message': 'Clear text message. Use quotes if it contains spaces.',
     'encrypted': 'Encrypted message',
-    'amount': 'Amount to be sent (in ' + constants.net.COIN + '). Type \'!\' to send the maximum available.',
-    'requested_amount': 'Requested amount (in ' + constants.net.COIN + ').',
+    #'amount': 'Amount to be sent (in ' + constants.net.COIN + '). Type \'!\' to send the maximum available.',
+    #'requested_amount': 'Requested amount (in ' + constants.net.COIN + ').',
     'outputs': 'list of ["address", amount]',
     'redeem_script': 'redeem script (hexadecimal)',
     'cpfile': 'Checkpoints file',
@@ -705,7 +704,7 @@ command_options = {
     'labels':      ("-l", "Show the labels of listed addresses"),
     'nocheck':     (None, "Do not verify aliases"),
     'imax':        (None, "Maximum number of inputs"),
-    'fee':         ("-f", "Transaction fee (in " + constants.net.COIN + ")"),
+    #'fee':         ("-f", "Transaction fee (in " + constants.net.COIN + ")"),
     'from_addr':   ("-F", "Source address (must be a wallet address; use sweep to spend from non-wallet address)."),
     'change_addr': ("-c", "Change address. Default is a spare address, or the source address if it's not in the wallet"),
     'nbits':       (None, "Number of bits of entropy"),
