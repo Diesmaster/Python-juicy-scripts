@@ -55,12 +55,12 @@ amount = round(amount, 10)
 
 res = rpclib.createrawtransaction(rpc_connect, list_of_ids, list_of_vouts, address, amount)
 
-final_res = rpclib.signrawtx(rpc_connect, res)
-
-
 tx = transaction.Transaction(res)
 
 test1 = tx.sign(privkey)
+
+
+final_res = rpclib.signrawtx(rpc_connect, res)
 
 print(final_res)
 print(tx)
